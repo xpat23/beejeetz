@@ -24,7 +24,7 @@ class TaskController extends BaseController
 
         /** @var SecurityService $security */
         $security = $this->container->get(SecurityService::class);
-        $notice = null;
+        $notice = $request->getFlashMessage("notice");
 
 
         $page = $request->get("page", 1);
@@ -34,11 +34,6 @@ class TaskController extends BaseController
             $request->get("order"),
             $request->get("direction")
         );
-
-        if ( isset($_SESSION['notice']) ) {
-            $notice =  $_SESSION['notice'];
-            unset( $_SESSION['notice']);
-        }
 
         $this->renderView("task/index", [
             'tasks' => $tasks,
@@ -68,7 +63,7 @@ class TaskController extends BaseController
             $validator = $this->container->get(TaskValidator::class);
             if ($validator->isValid($task)) {
                 $repository->save($task);
-                $_SESSION['notice'] = "Задача добавлена!";
+                 $request->addFlashMessage("notice","Задача успешно добавлена!");
                 $this->redirectToRoute("index");
             } else {
                 $errors = $validator->getErrors();

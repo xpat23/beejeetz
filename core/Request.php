@@ -29,4 +29,19 @@ class Request
         return $this->getMethod() == $method;
     }
 
+    public function addFlashMessage($name, $message)
+    {
+        $_SESSION[$name] = $message;
+    }
+
+    public function getFlashMessage($name)
+    {
+        $result = null;
+        if (isset($_SESSION[$name])) {
+            $result = $_SESSION[$name];
+            unset($_SESSION[$name]);
+        }
+        return $result;
+    }
+
 }
