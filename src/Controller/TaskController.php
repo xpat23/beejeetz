@@ -24,6 +24,7 @@ class TaskController extends BaseController
 
         /** @var SecurityService $security */
         $security = $this->container->get(SecurityService::class);
+        $notice = null;
 
 
         $page = $request->get("page", 1);
@@ -34,12 +35,18 @@ class TaskController extends BaseController
             $request->get("direction")
         );
 
+        if ( isset($_SESSION['notice']) ) {
+            $notice =  $_SESSION['notice'];
+            unset( $_SESSION['notice']);
+        }
+
         $this->renderView("task/index", [
             'tasks' => $tasks,
             'request' => $request,
             "security" => $security,
             "pages" => range(1, ceil($repository->getTotalCount() / self::ITEMS_PER_PAGE)),
-            "router" => $this->router
+            "router" => $this->router,
+            "notice" => $notice
         ]);
     }
 
@@ -61,6 +68,7 @@ class TaskController extends BaseController
             $validator = $this->container->get(TaskValidator::class);
             if ($validator->isValid($task)) {
                 $repository->save($task);
+                $_SESSION['notice'] = "Задача добавлена!";
                 $this->redirectToRoute("index");
             } else {
                 $errors = $validator->getErrors();

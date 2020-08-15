@@ -7,6 +7,7 @@ $router = $args['router'];
 $security = $args['security'];
 /** @var \Model\Domain\Security\User $user */
 $user = $security->getCurrentUser();
+$notice = $args['notice'];
 function getDirection($name, $request)
 {
     return $request->get('order') == $name && $request->get('direction') == "asc" ? "desc" : "asc";
@@ -25,6 +26,11 @@ function getDirection($name, $request)
     <a href="<?= $router->generate("task_new") ?>" class="btn btn-primary">Добавить</a>
     <br>
     <br>
+    <?php if ($notice) : ?>
+    <div class="alert alert-success">
+        <?=$notice?>
+    </div>
+    <?php endif ?>
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
